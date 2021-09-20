@@ -18,6 +18,9 @@ class Ui_MainWindow(object):
     user = None
     dbConn = None
 
+    def likePost(self, thePost, theUser, event):
+        post.setLike(self.dbConn, thePost, theUser);
+
     def showPosts(self):
         posts = post.getAll(self.dbConn)
 
@@ -43,17 +46,28 @@ class Ui_MainWindow(object):
                 self.like.setStyleSheet("color: rgb(255, 0, 0);\n"
         "background-color: rgb(255, 255, 255);")
                 self.like.setObjectName("like")
+                self.postTitle_ = QtWidgets.QLabel(self.post)
+                self.postTitle_.setGeometry(QtCore.QRect(10, 55, 481, 21))
+                self.postTitle_.setText(p[2]);
+                self.postTitle_.setContextMenuPolicy(QtCore.Qt.PreventContextMenu)
+                self.postTitle_.setLayoutDirection(QtCore.Qt.LeftToRight)
+                self.postTitle_.setStyleSheet("background-color: rgb(255, 255, 255);")
+                self.postTitle_.setScaledContents(False)
+                self.postTitle_.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
+                self.postTitle_.setWordWrap(False)
+                self.postTitle_.setObjectName("postTitle_")
                 self.postContent = QtWidgets.QLabel(self.post)
-                self.postContent.setGeometry(QtCore.QRect(10, 60, 481, 101))
+                self.postContent.setGeometry(QtCore.QRect(10, 80, 481, 81))
                 self.postContent.setContextMenuPolicy(QtCore.Qt.PreventContextMenu)
                 self.postContent.setLayoutDirection(QtCore.Qt.LeftToRight)
                 self.postContent.setStyleSheet("background-color: rgb(255, 255, 255);")
                 self.postContent.setScaledContents(False)
                 self.postContent.setWordWrap(False)
                 self.postContent.setObjectName("postContent")
-                self.userName.setText(p[2])
-                self.like.setText("❤")
-                self.postContent.setText(p[1])
+                self.userName.setText(p[1])
+                self.like.setText("❤" + " " + str(p[4]))
+                self.like.clicked.connect(partial(self.likePost, p[0], self.user[0]))
+                self.postContent.setText(p[3])
                 self.postsLayout.addWidget(self.post)
 
 
