@@ -21,3 +21,12 @@ class User:
 		user = cursor.fetchall()
 
 		return user
+
+	def update(conn, data, currentNick):
+		cursor = conn.cursor()
+		sql = 'UPDATE users SET username = "' + data['username'] + '", _password = "' + data['password'] + '" WHERE username = "' + currentNick + '";'
+
+		cursor.execute(sql)
+		conn.commit()
+
+		return 'OK'

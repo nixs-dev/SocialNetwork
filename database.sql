@@ -1,4 +1,4 @@
-create database socialNetwork;
+drop database socialnetwork; create database socialNetwork;
 use socialNetwork;
 
 create table users (
@@ -18,7 +18,10 @@ create table likes (
 	liker varchar(30)
 );
 
-ALTER TABLE users add constraint pk_users  primary key(username);
+ALTER TABLE users add constraint pk_users primary key(username);
 ALTER TABLE posts add constraint fk_posts  foreign key(author) references users(username);
 ALTER TABLE likes add constraint fk_likes foreign key(postId) references posts(id);
 ALTER TABLE likes add constraint fk2_likes foreign key(liker) references users(username);
+
+
+insert into users values("theAdm", "adm")
