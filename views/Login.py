@@ -24,7 +24,7 @@ class Ui_LoginWindow(object):
         if result[0] != 'Success':
             self.error.setText(result[0])
         else:
-            session.saveSession(result[1][0] + '|' + result[1][1])
+            session.saveSession(result[1][0] + '|' + result[1][3])
             self.MainWindow = QtWidgets.QMainWindow()
             self.ui = Ui_MainWindow()
             self.ui.setupUi(self.MainWindow, self.dbConn, result[1])

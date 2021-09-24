@@ -19,35 +19,35 @@ class Ui_ProfileWindow(QtWidgets.QMainWindow):
     dbConn = None
     user = None
     thisWindow = None
-    changes = {'username': False, 'password': False}
+    changes = {'displayName': False, 'password': False}
 
 
     def updateProfile(self):
-        username = self.username.text()
+        displayName = self.displayName.text()
         password = self.password.text()
 
-        data = {'username': username, 'password': password}
+        data = {'displayName': displayName, 'password': password}
 
         result = User.update(self.dbConn, data, self.user[0])
 
         if result == 'OK':
-            self.user = [username, password]
+            self.user = [self.user[0], displayName, password]
             QtWidgets.QMessageBox.about(self, 'Sucesso', 'Perfil Atualizado!')
-            Session.saveSession(self.user[0] + '|' + self.user[1])
+            Session.saveSession(self.user[0] + '|' + self.user[2])
 
     def checkChanges(self, fieldName, change):
-        if fieldName == 'username':
-            if self.user[0] == change:
-                self.changes['username'] = False
-            else:
-                self.changes['username'] = True
-        elif fieldName == 'password':
+        if fieldName == 'displayName':
             if self.user[1] == change:
+                self.changes['displayName'] = False
+            else:
+                self.changes['displayName'] = True
+        elif fieldName == 'password':
+            if self.user[2] == change:
                 self.changes['password'] = False
             else:
                 self.changes['password'] = True
 
-        if self.changes['username'] or self.changes['password']:
+        if self.changes['displayName'] or self.changes['password']:
             self.update.setEnabled(True)
         else:
             self.update.setEnabled(False)
@@ -79,15 +79,17 @@ class Ui_ProfileWindow(QtWidgets.QMainWindow):
         self.label_username.setGeometry(QtCore.QRect(150, 280, 101, 31))
         self.label_username.setObjectName("label_username")
         self.label_password = QtWidgets.QLabel(self.centralwidget)
-        self.label_password.setGeometry(QtCore.QRect(150, 340, 101, 31))
+        self.label_password.setGeometry(QtCore.QRect(150, 400, 101, 31))
         self.label_password.setObjectName("label_password")
         self.username = QtWidgets.QLineEdit(self.centralwidget)
+        self.username.setEnabled(False)
         self.username.setGeometry(QtCore.QRect(250, 279, 321, 31))
-        self.username.setStyleSheet("background-color: rgb(255, 255, 255);")
+        self.username.setStyleSheet("\n"
+"background-color: rgb(197, 197, 197);")
         self.username.setText("")
         self.username.setObjectName("username")
         self.password = QtWidgets.QLineEdit(self.centralwidget)
-        self.password.setGeometry(QtCore.QRect(250, 340, 321, 31))
+        self.password.setGeometry(QtCore.QRect(250, 400, 321, 31))
         self.password.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.password.setInputMask("")
         self.password.setText("")
@@ -101,7 +103,6 @@ class Ui_ProfileWindow(QtWidgets.QMainWindow):
         self.backButton.setFont(font)
         self.backButton.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.backButton.setObjectName("backButton")
-        self.backButton.clicked.connect(partial(self.backToHome))
         self.update = QtWidgets.QPushButton(self.centralwidget)
         self.update.setEnabled(False)
         self.update.setGeometry(QtCore.QRect(730, 590, 61, 31))
@@ -110,13 +111,30 @@ class Ui_ProfileWindow(QtWidgets.QMainWindow):
         self.update.setFont(font)
         self.update.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.update.setObjectName("update")
+        self.label_displayName = QtWidgets.QLabel(self.centralwidget)
+        self.label_displayName.setGeometry(QtCore.QRect(150, 340, 101, 31))
+        self.label_displayName.setObjectName("label_displayName")
+        self.displayName = QtWidgets.QLineEdit(self.centralwidget)
+        self.displayName.setEnabled(True)
+        self.displayName.setGeometry(QtCore.QRect(250, 340, 321, 31))
+        self.displayName.setStyleSheet("background-color: rgb(255, 255, 255);")
+        self.displayName.setText("")
+        self.displayName.setObjectName("displayName")
         MainWindow.setCentralWidget(self.centralwidget)
 
 
         self.username.setText(user[0])
-        self.password.setText(user[1])
-        self.username.textChanged.connect(partial(self.checkChanges, 'username'));
+        self.displayName.setText(user[1])
+
+        if self.user[2] != None:
+            imageForProfile = QtGui.QPixmap()
+            imageForProfile.loadFromData(self.user[2])
+            self.profilePhoto.setPixmap(imageForProfile)
+        
+        self.password.setText(user[3])
+        self.displayName.textChanged.connect(partial(self.checkChanges, 'displayName'));
         self.password.textChanged.connect(partial(self.checkChanges, 'password'));
+        self.backButton.clicked.connect(partial(self.backToHome))
         self.update.clicked.connect(partial(self.updateProfile))
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -128,3 +146,4 @@ class Ui_ProfileWindow(QtWidgets.QMainWindow):
         self.label_password.setText(_translate("MainWindow", "Senha:"))
         self.backButton.setText(_translate("MainWindow", "☚"))
         self.update.setText(_translate("MainWindow", "Atualizar"))
+        self.label_displayName.setText(_translate("MainWindow", "Nome de exibição:"))

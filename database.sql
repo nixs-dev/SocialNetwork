@@ -3,6 +3,8 @@ use socialNetwork;
 
 create table users (
 	username varchar(30),
+    displayName varchar(30),
+    photo longblob,
     _password varchar(30)
 );
 
@@ -24,4 +26,4 @@ ALTER TABLE likes add constraint fk_likes foreign key(postId) references posts(i
 ALTER TABLE likes add constraint fk2_likes foreign key(liker) references users(username);
 
 
-insert into users values("theAdm", "adm")
+insert into users values("theAdm", "ADM", load_file("C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\screenshot.png"), "adm");

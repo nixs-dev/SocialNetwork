@@ -4,13 +4,13 @@ class Post:
 
 	def send(conn, username, title, body):
 		cursor = conn.cursor()
-		title = title.text()
-		body = body.toPlainText()
 
 		sql = 'INSERT INTO posts (author, title, body) VALUES("' + username + '", "'+ title + '", "' + body + '")';
 
 		cursor.execute(sql)
 		conn.commit()
+
+		return 'OK'
 
 	def getAll(conn):
 		cursor = conn.cursor()
@@ -24,11 +24,20 @@ class Post:
 
 		for p in posts:
 			p = list(p)
+			p[1] = Post.getAuthor(conn, p[1]) 
 			likes = len(Post.getLikes(conn, p[0]))
 			p.append(likes)
 			changedPosts.append(p)
 
 		return changedPosts
+
+	def getAuthor(conn, username):
+		cursor = conn.cursor()
+		sql = 'SELECT * FROM users WHERE username = "' + username + '"';
+
+		cursor.execute(sql)
+
+		return cursor.fetchall()[0]
 
 	def getLikes(conn, post):
 		cursor = conn.cursor()

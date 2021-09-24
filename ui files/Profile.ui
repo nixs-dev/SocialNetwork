@@ -53,7 +53,7 @@
     <property name="geometry">
      <rect>
       <x>150</x>
-      <y>340</y>
+      <y>400</y>
       <width>101</width>
       <height>31</height>
      </rect>
@@ -63,6 +63,9 @@
     </property>
    </widget>
    <widget class="QLineEdit" name="username">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>250</x>
@@ -72,7 +75,8 @@
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(255, 255, 255);</string>
+     <string notr="true">
+background-color: rgb(197, 197, 197);</string>
     </property>
     <property name="text">
      <string/>
@@ -82,7 +86,7 @@
     <property name="geometry">
      <rect>
       <x>250</x>
-      <y>340</y>
+      <y>400</y>
       <width>321</width>
       <height>31</height>
      </rect>
@@ -146,6 +150,38 @@
     </property>
     <property name="text">
      <string>Atualizar</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_displayName">
+    <property name="geometry">
+     <rect>
+      <x>150</x>
+      <y>340</y>
+      <width>101</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Nome de exibição:</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="displayName">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>250</x>
+      <y>340</y>
+      <width>321</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(255, 255, 255);</string>
+    </property>
+    <property name="text">
+     <string/>
     </property>
    </widget>
   </widget>

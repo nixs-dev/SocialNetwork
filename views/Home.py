@@ -14,212 +14,245 @@ from database.Post import Post as post
 from functools import partial
 
 
-class Ui_MainWindow(object):
+class Ui_MainWindow(QtWidgets.QMainWindow):
 
-	user = None
-	dbConn = None
-	thisWindow = None
+    user = None
+    dbConn = None
+    thisWindow = None
 
-	def openProfile(self, event):
-		self.thisWindow.close()
-		
-		self.ProfileWindow = QtWidgets.QMainWindow()
-		ui = Profile.Ui_ProfileWindow()
-		ui.setupUi(self.ProfileWindow, self.dbConn, self.user)
-		self.ProfileWindow.show()
+    def reloadPosts(self, layout):
+        while layout.count():
+            child = layout.takeAt(0)
+            if child.widget() is not None:
+                child.widget().deleteLater()
+            elif child.layout() is not None:
+                self.clearTasks(child.layout(), None)
 
-
-	def likePost(self, likeButton, thePost, theUser, event):
-		currentAmount = likeButton.text().split(" ")[1]
-		post.setLike(self.dbConn, thePost, theUser);
-		likeButton.setText("❤" + " " + str(int(currentAmount) + 1))
-
-	def showPosts(self):
-		posts = post.getAll(self.dbConn)
-
-		for p in posts:
-			self.post = QtWidgets.QFrame()
-			self.post.setEnabled(True)
-			self.post.setFixedSize(QtCore.QSize(500, 200))
-			self.post.setStyleSheet("background-color: rgb(85, 255, 127);")
-			self.post.setFrameShape(QtWidgets.QFrame.StyledPanel)
-			self.post.setFrameShadow(QtWidgets.QFrame.Raised)
-			self.post.setObjectName("post")
-			self.userPhoto = QtWidgets.QLabel(self.post)
-			self.userPhoto.setGeometry(QtCore.QRect(10, 10, 47, 41))
-			self.userPhoto.setText("")
-			self.userPhoto.setPixmap(QtGui.QPixmap("assets/defaultIcon.png"))
-			self.userPhoto.setScaledContents(True)
-			self.userPhoto.setObjectName("userPhoto")
-			self.userName = QtWidgets.QLabel(self.post)
-			self.userName.setGeometry(QtCore.QRect(70, 10, 47, 13))
-			self.userName.setObjectName("userName")
-			self.like = QtWidgets.QPushButton(self.post)
-			self.like.setGeometry(QtCore.QRect(460, 170, 31, 23))
-			self.like.setStyleSheet("color: rgb(255, 0, 0);\n"
-		"background-color: rgb(255, 255, 255);")
-			self.like.setObjectName("like")
-			self.postTitle_ = QtWidgets.QLabel(self.post)
-			self.postTitle_.setGeometry(QtCore.QRect(10, 55, 481, 21))
-			self.postTitle_.setText(p[2]);
-			self.postTitle_.setContextMenuPolicy(QtCore.Qt.PreventContextMenu)
-			self.postTitle_.setLayoutDirection(QtCore.Qt.LeftToRight)
-			self.postTitle_.setStyleSheet("background-color: rgb(255, 255, 255);")
-			self.postTitle_.setScaledContents(False)
-			self.postTitle_.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
-			self.postTitle_.setWordWrap(False)
-			self.postTitle_.setObjectName("postTitle_")
-			self.postContent = QtWidgets.QLabel(self.post)
-			self.postContent.setGeometry(QtCore.QRect(10, 80, 481, 81))
-			self.postContent.setContextMenuPolicy(QtCore.Qt.PreventContextMenu)
-			self.postContent.setLayoutDirection(QtCore.Qt.LeftToRight)
-			self.postContent.setStyleSheet("background-color: rgb(255, 255, 255);")
-			self.postContent.setScaledContents(False)
-			self.postContent.setWordWrap(False)
-			self.postContent.setObjectName("postContent")
-			self.userName.setText(p[1])
-			self.like.setText("❤" + " " + str(p[4]))
-			self.like.clicked.connect(partial(self.likePost, self.like, p[0], self.user[0]))
-			self.postContent.setText(p[3])
-			self.postsLayout.addWidget(self.post)
+    def openProfile(self, event):
+        self.thisWindow.close()
+        
+        self.ProfileWindow = QtWidgets.QMainWindow()
+        ui = Profile.Ui_ProfileWindow()
+        ui.setupUi(self.ProfileWindow, self.dbConn, self.user)
+        self.ProfileWindow.show()
 
 
-	def myConfig(self, MainWindow):
-		MainWindow.setFixedSize(1024, 768)
-		self.username.setText(self.user[0])
-		self.sendPost.clicked.connect(partial(post.send, self.dbConn, self.user[0], self.postTitle, self.postText))
+    def likePost(self, likeButton, thePost, theUser, event):
+        currentAmount = likeButton.text().split(" ")[1]
+        post.setLike(self.dbConn, thePost, theUser);
+        likeButton.setText("❤" + " " + str(int(currentAmount) + 1))
 
-	def setupUi(self, MainWindow, dbConn, user):
+    def showPosts(self):
+        posts = post.getAll(self.dbConn)
 
-		self.thisWindow = MainWindow
-		self.user = user
-		self.dbConn = dbConn
+        for p in posts:
+            self.post = QtWidgets.QFrame()
+            self.post.setEnabled(True)
+            self.post.setFixedSize(QtCore.QSize(500, 200))
+            self.post.setStyleSheet("background-color: rgb(85, 255, 127);")
+            self.post.setFrameShape(QtWidgets.QFrame.StyledPanel)
+            self.post.setFrameShadow(QtWidgets.QFrame.Raised)
+            self.post.setObjectName("post")
+            self.userPhoto = QtWidgets.QLabel(self.post)
+            self.userPhoto.setGeometry(QtCore.QRect(10, 10, 47, 41))
+            self.userPhoto.setText("")
+            self.userPhoto.setPixmap(QtGui.QPixmap("assets/defaultIcon.png"))
+            self.userPhoto.setScaledContents(True)
+            self.userPhoto.setObjectName("userPhoto")
+            self.userName = QtWidgets.QLabel(self.post)
+            self.userName.setGeometry(QtCore.QRect(70, 10, 47, 13))
+            self.userName.setObjectName("userName")
+            self.like = QtWidgets.QPushButton(self.post)
+            self.like.setGeometry(QtCore.QRect(460, 170, 31, 23))
+            self.like.setStyleSheet("color: rgb(255, 0, 0);\n"
+        "background-color: rgb(255, 255, 255);")
+            self.like.setObjectName("like")
+            self.postTitle_ = QtWidgets.QLabel(self.post)
+            self.postTitle_.setGeometry(QtCore.QRect(10, 55, 481, 21))
+            self.postTitle_.setText(p[2]);
+            self.postTitle_.setContextMenuPolicy(QtCore.Qt.PreventContextMenu)
+            self.postTitle_.setLayoutDirection(QtCore.Qt.LeftToRight)
+            self.postTitle_.setStyleSheet("background-color: rgb(255, 255, 255);")
+            self.postTitle_.setScaledContents(False)
+            self.postTitle_.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
+            self.postTitle_.setWordWrap(False)
+            self.postTitle_.setObjectName("postTitle_")
+            self.postContent = QtWidgets.QLabel(self.post)
+            self.postContent.setGeometry(QtCore.QRect(10, 80, 481, 81))
+            self.postContent.setContextMenuPolicy(QtCore.Qt.PreventContextMenu)
+            self.postContent.setLayoutDirection(QtCore.Qt.LeftToRight)
+            self.postContent.setStyleSheet("background-color: rgb(255, 255, 255);")
+            self.postContent.setScaledContents(False)
+            self.postContent.setWordWrap(False)
+            self.postContent.setObjectName("postContent")
 
-		#################################################### QT DESIGNER ###############################################
+            if p[1][2] != None:
+                photoForAuthorPost = QtGui.QPixmap() 
+                photoForAuthorPost.loadFromData(p[1][2])
 
-		MainWindow.setObjectName("MainWindow")
-		MainWindow.resize(1024, 768)
-		MainWindow.setStyleSheet("background-color: rgb(255, 255, 255);")
-		self.centralwidget = QtWidgets.QWidget(MainWindow)
-		self.centralwidget.setObjectName("centralwidget")
-		self.sideBar = QtWidgets.QWidget(self.centralwidget)
-		self.sideBar.setGeometry(QtCore.QRect(0, 0, 281, 771))
-		self.sideBar.setAutoFillBackground(False)
-		self.sideBar.setStyleSheet("background-color: rgb(255, 65, 255);\n"
-	"border: 2px double rgb(0, 0, 0);")
-		self.sideBar.setObjectName("sideBar")
-		self.profilePhoto = QtWidgets.QLabel(self.sideBar)
-		self.profilePhoto.setGeometry(QtCore.QRect(36, 150, 211, 201))
-		self.profilePhoto.setStyleSheet("")
-		self.profilePhoto.setText("")
-		self.profilePhoto.setPixmap(QtGui.QPixmap("assets/defaultIcon.png"))
-		self.profilePhoto.setScaledContents(True)
-		self.profilePhoto.setObjectName("profilePhoto")
-		self.options = QtWidgets.QWidget(self.sideBar)
-		self.options.setGeometry(QtCore.QRect(30, 380, 221, 281))
-		self.options.setStyleSheet("background-color: rgb(156, 11, 154);\n"
-	"border: none;")
-		self.options.setObjectName("options")
-		self.toProfile = QtWidgets.QPushButton(self.options)
-		self.toProfile.setGeometry(QtCore.QRect(0, 10, 221, 51))
-		self.toProfile.setStyleSheet("border: 1px solid rgb(0, 0, 0);\n"
+                self.userPhoto.setPixmap(photoForAuthorPost)
+                
+            self.userName.setText(p[1][1])
+            self.like.setText("❤" + " " + str(p[4]))
+            self.like.clicked.connect(partial(self.likePost, self.like, p[0], self.user[0]))
+            self.postContent.setText(p[3])
+            self.postsLayout.addWidget(self.post)
+
+
+    def myConfig(self, MainWindow):
+        MainWindow.setFixedSize(1024, 768)
+
+    def sendYourPost(self):
+        author = self.user[0]
+        title = self.postTitle.text()
+        content = self.postText.toPlainText()
+
+        result = post.send(self.dbConn, author, title, content)
+
+        if result == 'OK':
+            QtWidgets.QMessageBox.about(self, 'Postado', 'Seu post foi enviado!')
+
+            self.reloadPosts(self.postsLayout)
+            self.showPosts()
+
+    def setupUi(self, MainWindow, dbConn, user):
+
+        self.thisWindow = MainWindow
+        self.user = user
+        self.dbConn = dbConn
+
+        #################################################### QT DESIGNER ###############################################
+
+        MainWindow.setObjectName("MainWindow")
+        MainWindow.resize(1024, 768)
+        MainWindow.setStyleSheet("background-color: rgb(255, 255, 255);")
+        self.centralwidget = QtWidgets.QWidget(MainWindow)
+        self.centralwidget.setObjectName("centralwidget")
+        self.sideBar = QtWidgets.QWidget(self.centralwidget)
+        self.sideBar.setGeometry(QtCore.QRect(0, 0, 281, 771))
+        self.sideBar.setAutoFillBackground(False)
+        self.sideBar.setStyleSheet("background-color: rgb(255, 65, 255);\n"
+    "border: 2px double rgb(0, 0, 0);")
+        self.sideBar.setObjectName("sideBar")
+        self.profilePhoto = QtWidgets.QLabel(self.sideBar)
+        self.profilePhoto.setGeometry(QtCore.QRect(36, 150, 211, 201))
+        self.profilePhoto.setStyleSheet("")
+        self.profilePhoto.setText("")
+        self.profilePhoto.setPixmap(QtGui.QPixmap("assets/defaultIcon.png"))
+        self.profilePhoto.setScaledContents(True)
+        self.profilePhoto.setObjectName("profilePhoto")
+        self.options = QtWidgets.QWidget(self.sideBar)
+        self.options.setGeometry(QtCore.QRect(30, 380, 221, 281))
+        self.options.setStyleSheet("background-color: rgb(156, 11, 154);\n"
+    "border: none;")
+        self.options.setObjectName("options")
+        self.toProfile = QtWidgets.QPushButton(self.options)
+        self.toProfile.setGeometry(QtCore.QRect(0, 10, 221, 51))
+        self.toProfile.setStyleSheet("border: 1px solid rgb(0, 0, 0);\n"
 "background-color: rgb(255, 255, 255);")
-		self.toProfile.setObjectName("toProfile")
-		self.toProfile.clicked.connect(self.openProfile)
-		self.toChat = QtWidgets.QPushButton(self.options)
-		self.toChat.setGeometry(QtCore.QRect(0, 80, 221, 51))
-		self.toChat.setStyleSheet("border: 1px solid rgb(0, 0, 0);\n"
+        self.toProfile.setObjectName("toProfile")
+        self.toProfile.clicked.connect(self.openProfile)
+        self.toChat = QtWidgets.QPushButton(self.options)
+        self.toChat.setGeometry(QtCore.QRect(0, 80, 221, 51))
+        self.toChat.setStyleSheet("border: 1px solid rgb(0, 0, 0);\n"
 "background-color: rgb(255, 255, 255);")
-		self.toChat.setObjectName("toChat")
-		self.toSettings = QtWidgets.QPushButton(self.options)
-		self.toSettings.setGeometry(QtCore.QRect(0, 150, 221, 51))
-		self.toSettings.setStyleSheet("border: 1px solid rgb(0, 0, 0);\n"
+        self.toChat.setObjectName("toChat")
+        self.toSettings = QtWidgets.QPushButton(self.options)
+        self.toSettings.setGeometry(QtCore.QRect(0, 150, 221, 51))
+        self.toSettings.setStyleSheet("border: 1px solid rgb(0, 0, 0);\n"
 "background-color: rgb(255, 255, 255);")
-		self.toSettings.setObjectName("toSettings")
-		self.about = QtWidgets.QPushButton(self.options)
-		self.about.setGeometry(QtCore.QRect(0, 220, 221, 51))
-		self.about.setStyleSheet("border: 1px solid rgb(0, 0, 0);\n"
+        self.toSettings.setObjectName("toSettings")
+        self.about = QtWidgets.QPushButton(self.options)
+        self.about.setGeometry(QtCore.QRect(0, 220, 221, 51))
+        self.about.setStyleSheet("border: 1px solid rgb(0, 0, 0);\n"
 "background-color: rgb(255, 255, 255);")
-		self.about.setObjectName("about")
-		self.username = QtWidgets.QLabel(self.sideBar)
-		self.username.setGeometry(QtCore.QRect(10, 60, 261, 41))
-		font = QtGui.QFont()
-		font.setFamily("Impact")
-		font.setPointSize(30)
-		self.username.setFont(font)
-		self.username.setStyleSheet("border: none")
-		self.username.setScaledContents(False)
-		self.username.setAlignment(QtCore.Qt.AlignCenter)
-		self.username.setObjectName("username")
-		self.background = QtWidgets.QLabel(self.centralwidget)
-		self.background.setGeometry(QtCore.QRect(0, 0, 1024, 768))
-		font = QtGui.QFont()
-		font.setFamily("MS Serif")
-		self.background.setFont(font)
-		self.background.setText("")
-		self.background.setPixmap(QtGui.QPixmap("assets/mainBackground.jpg"))
-		self.background.setScaledContents(True)
-		self.background.setObjectName("background")
-		self.frame = QtWidgets.QFrame(self.centralwidget)
-		self.frame.setGeometry(QtCore.QRect(420, 20, 461, 241))
-		self.frame.setStyleSheet("border: 2px solid rgb(98, 106, 255);")
-		self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
-		self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
-		self.frame.setObjectName("frame")
-		self.postText = QtWidgets.QTextEdit(self.frame)
-		self.postText.setGeometry(QtCore.QRect(40, 110, 381, 71))
-		self.postText.setStyleSheet("border: 1px solid;")
-		self.postText.setObjectName("postText")
-		self.label = QtWidgets.QLabel(self.frame)
-		self.label.setGeometry(QtCore.QRect(40, 25, 381, 31))
-		font = QtGui.QFont()
-		font.setFamily("Gadugi")
-		font.setPointSize(10)
-		self.label.setFont(font)
-		self.label.setStyleSheet("border: none")
-		self.label.setObjectName("label")
-		self.sendPost = QtWidgets.QPushButton(self.frame)
-		self.sendPost.setGeometry(QtCore.QRect(350, 190, 71, 41))
-		self.sendPost.setStyleSheet("border: 1px solid;")
-		self.sendPost.setObjectName("sendPost")
-		self.postTitle = QtWidgets.QLineEdit(self.frame)
-		self.postTitle.setGeometry(QtCore.QRect(40, 80, 381, 20))
-		self.postTitle.setObjectName("postTitle")
-		self.postsPanel = QtWidgets.QScrollArea(self.centralwidget)
-		self.postsPanel.setGeometry(QtCore.QRect(299, 279, 711, 471))
-		self.postsPanel.setWidgetResizable(True)
-		self.postsPanel.setAlignment(QtCore.Qt.AlignCenter)
-		self.postsPanel.setObjectName("postsPanel")
-		self.posts = QtWidgets.QWidget()
-		self.posts.setGeometry(QtCore.QRect(0, 0, 709, 469))
-		self.posts.setObjectName("posts")
-		self.postsLayout = QtWidgets.QVBoxLayout(self.posts)
-		self.postsLayout.setContentsMargins(50, 0, 0, 0)
-		self.postsLayout.setObjectName("postsLayout")
-		self.postsPanel.setWidget(self.posts)
-		MainWindow.setCentralWidget(self.centralwidget)
+        self.about.setObjectName("about")
+        self.username = QtWidgets.QLabel(self.sideBar)
+        self.username.setGeometry(QtCore.QRect(10, 60, 261, 41))
+        font = QtGui.QFont()
+        font.setFamily("Impact")
+        font.setPointSize(30)
+        self.username.setFont(font)
+        self.username.setStyleSheet("border: none")
+        self.username.setScaledContents(False)
+        self.username.setAlignment(QtCore.Qt.AlignCenter)
+        self.username.setObjectName("username")
+        self.background = QtWidgets.QLabel(self.centralwidget)
+        self.background.setGeometry(QtCore.QRect(0, 0, 1024, 768))
+        font = QtGui.QFont()
+        font.setFamily("MS Serif")
+        self.background.setFont(font)
+        self.background.setText("")
+        self.background.setPixmap(QtGui.QPixmap("assets/mainBackground.jpg"))
+        self.background.setScaledContents(True)
+        self.background.setObjectName("background")
+        self.frame = QtWidgets.QFrame(self.centralwidget)
+        self.frame.setGeometry(QtCore.QRect(420, 20, 461, 241))
+        self.frame.setStyleSheet("border: 2px solid rgb(98, 106, 255);")
+        self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame.setObjectName("frame")
+        self.postText = QtWidgets.QTextEdit(self.frame)
+        self.postText.setGeometry(QtCore.QRect(40, 110, 381, 71))
+        self.postText.setStyleSheet("border: 1px solid;")
+        self.postText.setObjectName("postText")
+        self.label = QtWidgets.QLabel(self.frame)
+        self.label.setGeometry(QtCore.QRect(40, 25, 381, 31))
+        font = QtGui.QFont()
+        font.setFamily("Gadugi")
+        font.setPointSize(10)
+        self.label.setFont(font)
+        self.label.setStyleSheet("border: none")
+        self.label.setObjectName("label")
+        self.sendPost = QtWidgets.QPushButton(self.frame)
+        self.sendPost.setGeometry(QtCore.QRect(350, 190, 71, 41))
+        self.sendPost.setStyleSheet("border: 1px solid;")
+        self.sendPost.setObjectName("sendPost")
+        self.postTitle = QtWidgets.QLineEdit(self.frame)
+        self.postTitle.setGeometry(QtCore.QRect(40, 80, 381, 20))
+        self.postTitle.setObjectName("postTitle")
+        self.postsPanel = QtWidgets.QScrollArea(self.centralwidget)
+        self.postsPanel.setGeometry(QtCore.QRect(299, 279, 711, 471))
+        self.postsPanel.setWidgetResizable(True)
+        self.postsPanel.setAlignment(QtCore.Qt.AlignCenter)
+        self.postsPanel.setObjectName("postsPanel")
+        self.posts = QtWidgets.QWidget()
+        self.posts.setGeometry(QtCore.QRect(0, 0, 709, 469))
+        self.posts.setObjectName("posts")
+        self.postsLayout = QtWidgets.QVBoxLayout(self.posts)
+        self.postsLayout.setContentsMargins(50, 0, 0, 0)
+        self.postsLayout.setObjectName("postsLayout")
+        self.postsPanel.setWidget(self.posts)
+        MainWindow.setCentralWidget(self.centralwidget)
 
 
 
-		#################################################################################################################
+        #################################################################################################################
 
-		self.myConfig(MainWindow)
-		self.showPosts()
-		self.retranslateUi(MainWindow)
-		QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        self.myConfig(MainWindow)
+        self.showPosts()
 
-		self.background.raise_()
-		self.sideBar.raise_()
-		self.frame.raise_()
-		self.postsPanel.raise_()
+        self.sendPost.clicked.connect(partial(self.sendYourPost))
+        self.retranslateUi(MainWindow)
+        QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-	def retranslateUi(self, MainWindow):
-		_translate = QtCore.QCoreApplication.translate
-		MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-		self.toProfile.setText(_translate("MainWindow", "Perfil"))
-		self.toChat.setText(_translate("MainWindow", "Chat"))
-		self.toSettings.setText(_translate("MainWindow", "Configurações"))
-		self.about.setText(_translate("MainWindow", "Sobre"))
-		self.username.setText(_translate("MainWindow", self.user[0]))
-		self.label.setText(_translate("MainWindow", "Como está se sentindo ? Quais são as novidades ?"))
-		self.sendPost.setText(_translate("MainWindow", "Enviar"))
+        self.background.raise_()
+        self.sideBar.raise_()
+        self.frame.raise_()
+        self.postsPanel.raise_()
+
+    def retranslateUi(self, MainWindow):
+        _translate = QtCore.QCoreApplication.translate
+        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        self.toProfile.setText(_translate("MainWindow", "Perfil"))
+        self.toChat.setText(_translate("MainWindow", "Chat"))
+        self.toSettings.setText(_translate("MainWindow", "Configurações"))
+        self.about.setText(_translate("MainWindow", "Sobre"))
+        self.username.setText(_translate("MainWindow", self.user[1]))
+        self.label.setText(_translate("MainWindow", "Como está se sentindo ? Quais são as novidades ?"))
+        self.sendPost.setText(_translate("MainWindow", "Enviar"))
+
+        if self.user[2] != None:
+            imageForProfile = QtGui.QPixmap()
+            imageForProfile.loadFromData(self.user[2])
+            self.profilePhoto.setPixmap(imageForProfile)

@@ -8,7 +8,7 @@ class User:
 		if user == []:
 			return ['Usuário não encontrado']
 		else:
-			if user[0][1] == password:
+			if user[0][3] == password:
 				return ['Success', user[0]]
 			else:
 				return ['Senha incorreta']
@@ -22,9 +22,9 @@ class User:
 
 		return user
 
-	def update(conn, data, currentNick):
+	def update(conn, data, username):
 		cursor = conn.cursor()
-		sql = 'UPDATE users SET username = "' + data['username'] + '", _password = "' + data['password'] + '" WHERE username = "' + currentNick + '";'
+		sql = 'UPDATE users SET displayName = "' + data['displayName'] + '", _password = "' + data['password'] + '" WHERE username = "' + username + '";'
 
 		cursor.execute(sql)
 		conn.commit()
