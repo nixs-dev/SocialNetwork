@@ -6,5 +6,5 @@ from database.Connection import Connection
 
 
 conn = Connection()
-user = User.getUser(conn, 'theAdm')
-print(user[0])
+photoData = open('C:\\Users\\x\\Pictures\\Eu\\pp66.jpg', 'rb').read()
+User.updatePhoto(conn, photoData, 'theAdm')

@@ -27,3 +27,5 @@ ALTER TABLE likes add constraint fk2_likes foreign key(liker) references users(u
 
 
 insert into users values("theAdm", "ADM", load_file("C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\screenshot.png"), "adm");
+
+select photo from users;

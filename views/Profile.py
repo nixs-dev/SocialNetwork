@@ -13,27 +13,48 @@ from database.User import User
 from tools.Session import Session
 from PyQt5 import QtCore, QtGui, QtWidgets
 from functools import partial
+from PIL import Image
+import os
 
 
 class Ui_ProfileWindow(QtWidgets.QMainWindow):
     dbConn = None
     user = None
     thisWindow = None
-    changes = {'displayName': False, 'password': False}
+    selectedProfilePhoto = ''
+    changes = {'profilePhoto': False, 'displayName': False, 'password': False}
+
+    def readPhotoData(self):
+        if self.selectedProfilePhoto != '':
+            photoData = open(self.selectedProfilePhoto, 'rb').read()
+            return photoData
+        else:
+            return ''
+
+    def selectNewProfilePhoto(self, event):
+        file = QtWidgets.QFileDialog.getOpenFileName(self, "Open file", os.environ["HOMEPATH"] + "\\Desktop","Image files (*.jpg *.png)")
+
+        if file[0] != '':
+            self.selectedProfilePhoto = file[0]
+            self.profilePhoto.setPixmap(QtGui.QPixmap(file[0]))
+            self.changes['profilePhoto'] = True
+
+            self.checkChanges('', '')
 
 
     def updateProfile(self):
+        profilePhoto = self.readPhotoData()
         displayName = self.displayName.text()
         password = self.password.text()
 
-        data = {'displayName': displayName, 'password': password}
+        data = {'profilePhoto': profilePhoto, 'displayName': displayName, 'password': password}
 
         result = User.update(self.dbConn, data, self.user[0])
 
         if result == 'OK':
-            self.user = [self.user[0], displayName, password]
+            self.user = [self.user[0], displayName, profilePhoto, password]
             QtWidgets.QMessageBox.about(self, 'Sucesso', 'Perfil Atualizado!')
-            Session.saveSession(self.user[0] + '|' + self.user[2])
+            Session.saveSession(self.user[0] + '|' + self.user[3])
 
     def checkChanges(self, fieldName, change):
         if fieldName == 'displayName':
@@ -47,7 +68,7 @@ class Ui_ProfileWindow(QtWidgets.QMainWindow):
             else:
                 self.changes['password'] = True
 
-        if self.changes['displayName'] or self.changes['password']:
+        if self.changes['profilePhoto'] or self.changes['displayName'] or self.changes['password']:
             self.update.setEnabled(True)
         else:
             self.update.setEnabled(False)
@@ -132,6 +153,8 @@ class Ui_ProfileWindow(QtWidgets.QMainWindow):
             self.profilePhoto.setPixmap(imageForProfile)
         
         self.password.setText(user[3])
+
+        self.profilePhoto.mousePressEvent = partial(self.selectNewProfilePhoto)
         self.displayName.textChanged.connect(partial(self.checkChanges, 'displayName'));
         self.password.textChanged.connect(partial(self.checkChanges, 'password'));
         self.backButton.clicked.connect(partial(self.backToHome))
