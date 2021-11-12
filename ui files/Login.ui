@@ -19,6 +19,12 @@
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
+  <property name="font">
+   <font>
+    <pointsize>10</pointsize>
+    <underline>true</underline>
+   </font>
+  </property>
   <property name="windowTitle">
    <string>Login</string>
   </property>
@@ -155,7 +161,7 @@
      <property name="geometry">
       <rect>
        <x>50</x>
-       <y>40</y>
+       <y>10</y>
        <width>101</width>
        <height>101</height>
       </rect>
@@ -168,7 +174,7 @@
      <property name="geometry">
       <rect>
        <x>50</x>
-       <y>100</y>
+       <y>70</y>
        <width>101</width>
        <height>101</height>
       </rect>
@@ -181,7 +187,7 @@
      <property name="geometry">
       <rect>
        <x>160</x>
-       <y>80</y>
+       <y>50</y>
        <width>220</width>
        <height>20</height>
       </rect>
@@ -191,10 +197,13 @@
      <property name="geometry">
       <rect>
        <x>160</x>
-       <y>140</y>
+       <y>110</y>
        <width>220</width>
        <height>20</height>
       </rect>
+     </property>
+     <property name="echoMode">
+      <enum>QLineEdit::Password</enum>
      </property>
     </widget>
     <widget class="QPushButton" name="pushButton">
@@ -218,8 +227,8 @@
     <widget class="QLabel" name="error">
      <property name="geometry">
       <rect>
-       <x>160</x>
-       <y>180</y>
+       <x>50</x>
+       <y>160</y>
        <width>251</width>
        <height>16</height>
       </rect>
@@ -229,6 +238,31 @@
      </property>
      <property name="text">
       <string/>
+     </property>
+    </widget>
+    <widget class="QLabel" name="signUp">
+     <property name="geometry">
+      <rect>
+       <x>240</x>
+       <y>210</y>
+       <width>151</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+       <underline>true</underline>
+      </font>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+     <property name="text">
+      <string>Create a account</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
    </widget>
@@ -245,14 +279,17 @@
      <font>
       <family>MV Boli</family>
       <pointsize>48</pointsize>
+      <kerning>false</kerning>
      </font>
     </property>
     <property name="styleSheet">
-     <string notr="true">
-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgb(212, 32, 116), stop:0.994318 rgb(255, 173, 173));</string>
+     <string notr="true">color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgb(212, 32, 116), stop:0.994318 rgb(255, 173, 173));</string>
     </property>
     <property name="text">
      <string>Login</string>
+    </property>
+    <property name="scaledContents">
+     <bool>false</bool>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>

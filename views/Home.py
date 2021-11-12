@@ -11,6 +11,8 @@
 import views.Profile as Profile
 from PyQt5 import QtCore, QtGui, QtWidgets
 from database.Post import Post as post
+from tools.Session import Session
+import views.Login as Login
 from functools import partial
 
 
@@ -19,6 +21,15 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     user = None
     dbConn = None
     thisWindow = None
+
+    def logout(self):
+        Session.closeSession()
+
+        self.LoginWindow = QtWidgets.QMainWindow()
+        ui = Login.Ui_LoginWindow()
+        ui.setupUi(self.LoginWindow, self.dbConn)
+        self.LoginWindow.show()
+        self.thisWindow.close()
 
     def reloadPosts(self, layout):
         while layout.count():
@@ -98,10 +109,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.postContent.setText(p[3])
             self.postsLayout.addWidget(self.post)
 
-
-    def myConfig(self, MainWindow):
-        MainWindow.setFixedSize(1024, 768)
-
     def sendYourPost(self):
         author = self.user[0]
         title = self.postTitle.text()
@@ -114,6 +121,12 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
             self.reloadPosts(self.postsLayout)
             self.showPosts()
+
+    def additional_config(self, MainWindow):
+        MainWindow.setFixedSize(1024, 768)
+        self.logoutButton.clicked.connect(partial(self.logout))
+        self.sendPost.clicked.connect(partial(self.sendYourPost))
+        self.toProfile.mousePressEvent = partial(self.openProfile)
 
     def setupUi(self, MainWindow, dbConn, user):
 
@@ -130,13 +143,14 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.centralwidget.setObjectName("centralwidget")
         self.sideBar = QtWidgets.QWidget(self.centralwidget)
         self.sideBar.setGeometry(QtCore.QRect(0, 0, 281, 771))
+        self.sideBar.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.sideBar.setAutoFillBackground(False)
         self.sideBar.setStyleSheet("background-color: rgb(255, 65, 255);\n"
-    "border: 2px double rgb(0, 0, 0);")
+"border: 2px double rgb(0, 0, 0);")
         self.sideBar.setObjectName("sideBar")
         self.profilePhoto = QtWidgets.QLabel(self.sideBar)
         self.profilePhoto.setGeometry(QtCore.QRect(36, 150, 211, 201))
-        self.profilePhoto.setStyleSheet("")
+        self.profilePhoto.setStyleSheet("border: none")
         self.profilePhoto.setText("")
         self.profilePhoto.setPixmap(QtGui.QPixmap("assets/defaultIcon.png"))
         self.profilePhoto.setScaledContents(True)
@@ -144,26 +158,25 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.options = QtWidgets.QWidget(self.sideBar)
         self.options.setGeometry(QtCore.QRect(30, 380, 221, 281))
         self.options.setStyleSheet("background-color: rgb(156, 11, 154);\n"
-    "border: none;")
+"border: none;")
         self.options.setObjectName("options")
         self.toProfile = QtWidgets.QPushButton(self.options)
-        self.toProfile.setGeometry(QtCore.QRect(0, 10, 221, 51))
+        self.toProfile.setGeometry(QtCore.QRect(10, 10, 201, 51))
         self.toProfile.setStyleSheet("border: 1px solid rgb(0, 0, 0);\n"
 "background-color: rgb(255, 255, 255);")
         self.toProfile.setObjectName("toProfile")
-        self.toProfile.clicked.connect(self.openProfile)
         self.toChat = QtWidgets.QPushButton(self.options)
-        self.toChat.setGeometry(QtCore.QRect(0, 80, 221, 51))
+        self.toChat.setGeometry(QtCore.QRect(10, 80, 201, 51))
         self.toChat.setStyleSheet("border: 1px solid rgb(0, 0, 0);\n"
 "background-color: rgb(255, 255, 255);")
         self.toChat.setObjectName("toChat")
         self.toSettings = QtWidgets.QPushButton(self.options)
-        self.toSettings.setGeometry(QtCore.QRect(0, 150, 221, 51))
+        self.toSettings.setGeometry(QtCore.QRect(10, 150, 201, 51))
         self.toSettings.setStyleSheet("border: 1px solid rgb(0, 0, 0);\n"
 "background-color: rgb(255, 255, 255);")
         self.toSettings.setObjectName("toSettings")
         self.about = QtWidgets.QPushButton(self.options)
-        self.about.setGeometry(QtCore.QRect(0, 220, 221, 51))
+        self.about.setGeometry(QtCore.QRect(10, 220, 201, 51))
         self.about.setStyleSheet("border: 1px solid rgb(0, 0, 0);\n"
 "background-color: rgb(255, 255, 255);")
         self.about.setObjectName("about")
@@ -177,6 +190,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.username.setScaledContents(False)
         self.username.setAlignment(QtCore.Qt.AlignCenter)
         self.username.setObjectName("username")
+        self.logoutButton = QtWidgets.QPushButton(self.sideBar)
+        self.logoutButton.setGeometry(QtCore.QRect(210, 680, 41, 31))
+        self.logoutButton.setStyleSheet("background-color: rgb(170, 85, 255);")
+        self.logoutButton.setObjectName("logoutButton")
         self.background = QtWidgets.QLabel(self.centralwidget)
         self.background.setGeometry(QtCore.QRect(0, 0, 1024, 768))
         font = QtGui.QFont()
@@ -220,19 +237,25 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.posts.setGeometry(QtCore.QRect(0, 0, 709, 469))
         self.posts.setObjectName("posts")
         self.postsLayout = QtWidgets.QVBoxLayout(self.posts)
+        self.postsLayout.setSizeConstraint(QtWidgets.QLayout.SetDefaultConstraint)
         self.postsLayout.setContentsMargins(50, 0, 0, 0)
         self.postsLayout.setObjectName("postsLayout")
         self.postsPanel.setWidget(self.posts)
+        self.background.raise_()
+        self.sideBar.raise_()
+        self.frame.raise_()
+        self.postsPanel.raise_()
         MainWindow.setCentralWidget(self.centralwidget)
+
 
 
 
         #################################################################################################################
 
-        self.myConfig(MainWindow)
+        self.additional_config(MainWindow)
         self.showPosts()
 
-        self.sendPost.clicked.connect(partial(self.sendYourPost))
+
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -249,10 +272,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.toSettings.setText(_translate("MainWindow", "Configurações"))
         self.about.setText(_translate("MainWindow", "Sobre"))
         self.username.setText(_translate("MainWindow", self.user[1]))
+        self.logoutButton.setText(_translate("MainWindow", "❌"))
         self.label.setText(_translate("MainWindow", "Como está se sentindo ? Quais são as novidades ?"))
         self.sendPost.setText(_translate("MainWindow", "Enviar"))
 
-        if self.user[2] != None:
+        if self.user[2] != b'NULL':
             imageForProfile = QtGui.QPixmap()
             imageForProfile.loadFromData(self.user[2])
             self.profilePhoto.setPixmap(imageForProfile)

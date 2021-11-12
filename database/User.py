@@ -1,5 +1,6 @@
 import mysql.connector
 
+
 class User:
 
 	def login(conn, name, password):
@@ -28,6 +29,19 @@ class User:
 		args = (photoData, user)
 		cursor.execute(sql, args)
 		conn.commit()
+
+		return 'OK'
+
+	def insert(conn, user_data):
+		cursor = conn.cursor()
+		sql = 'INSERT INTO users VALUES(%s, %s, %s, %s)'
+		args = (user_data['username'], user_data['display_name'], user_data['profile_photo'], user_data['password'])
+
+		try:
+			cursor.execute(sql, args)
+			conn.commit()
+		except mysql.connector.errors.IntegrityError: # username already exists in database
+			return 'DUPLICATE_KEY'
 
 		return 'OK'
 

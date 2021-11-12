@@ -18,3 +18,7 @@ class Session:
 
         decyptedData = os.popen(Session.mainPath + '/external/encryptor.exe' + ' -dec "'+ data +'" "' + Session.key +'"').read().replace('\n', '')
         return decyptedData
+
+    def closeSession():
+        with open(Session.mainPath + '/data.bin', 'w') as f:
+            f.write('')

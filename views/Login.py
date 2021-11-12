@@ -11,7 +11,8 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from functools import partial
 from database.User import User as user
-from views.Home import Ui_MainWindow
+import views.Home as Home
+import views.SignUp as SignUp
 from tools.Session import Session as session
 
 
@@ -26,13 +27,22 @@ class Ui_LoginWindow(object):
         else:
             session.saveSession(result[1][0] + '|' + result[1][3])
             self.MainWindow = QtWidgets.QMainWindow()
-            self.ui = Ui_MainWindow()
+            self.ui = Home.Ui_MainWindow()
             self.ui.setupUi(self.MainWindow, self.dbConn, result[1])
             self.MainWindow.show()
             LoginWindow.close()
 
-    def myConfig(self, LoginWindow):
+    def go_to_sign_up(self, LoginWindow, event):
+        self.window = QtWidgets.QMainWindow()
+        self.signup_ui = SignUp.Ui_RegisterWindow()
+        self.signup_ui.setup_ui(self.window, self.dbConn)
+        self.window.show()
+        LoginWindow.close()
+
+
+    def additional_config(self, LoginWindow):
             LoginWindow.setFixedSize(1024, 768)
+            self.signUp.mousePressEvent = partial(self.go_to_sign_up, LoginWindow)
             self.pushButton.clicked.connect(partial(self.login, LoginWindow))
 
     def setupUi(self, LoginWindow, conn):
@@ -49,6 +59,10 @@ class Ui_LoginWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(LoginWindow.sizePolicy().hasHeightForWidth())
         LoginWindow.setSizePolicy(sizePolicy)
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        font.setUnderline(True)
+        LoginWindow.setFont(font)
         self.centralwidget = QtWidgets.QWidget(LoginWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.background = QtWidgets.QLabel(self.centralwidget)
@@ -93,16 +107,17 @@ class Ui_LoginWindow(object):
         self.container.setFrameShadow(QtWidgets.QFrame.Raised)
         self.container.setObjectName("container")
         self.label_username = QtWidgets.QLabel(self.container)
-        self.label_username.setGeometry(QtCore.QRect(50, 40, 101, 101))
+        self.label_username.setGeometry(QtCore.QRect(50, 10, 101, 101))
         self.label_username.setObjectName("label_username")
         self.label_password = QtWidgets.QLabel(self.container)
-        self.label_password.setGeometry(QtCore.QRect(50, 100, 101, 101))
+        self.label_password.setGeometry(QtCore.QRect(50, 70, 101, 101))
         self.label_password.setObjectName("label_password")
         self.username = QtWidgets.QLineEdit(self.container)
-        self.username.setGeometry(QtCore.QRect(160, 80, 220, 20))
+        self.username.setGeometry(QtCore.QRect(160, 50, 220, 20))
         self.username.setObjectName("username")
         self.password = QtWidgets.QLineEdit(self.container)
-        self.password.setGeometry(QtCore.QRect(160, 140, 220, 20))
+        self.password.setGeometry(QtCore.QRect(160, 110, 220, 20))
+        self.password.setEchoMode(QtWidgets.QLineEdit.Password)
         self.password.setObjectName("password")
         self.pushButton = QtWidgets.QPushButton(self.container)
         self.pushButton.setGeometry(QtCore.QRect(304, 232, 91, 51))
@@ -111,18 +126,29 @@ class Ui_LoginWindow(object):
         self.pushButton.setFont(font)
         self.pushButton.setObjectName("pushButton")
         self.error = QtWidgets.QLabel(self.container)
-        self.error.setGeometry(QtCore.QRect(160, 180, 251, 16))
+        self.error.setGeometry(QtCore.QRect(50, 160, 251, 16))
         self.error.setStyleSheet("color: rgb(255, 0, 0);")
         self.error.setText("")
         self.error.setObjectName("error")
+        self.signUp = QtWidgets.QLabel(self.container)
+        self.signUp.setGeometry(QtCore.QRect(240, 210, 151, 20))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        font.setUnderline(True)
+        self.signUp.setFont(font)
+        self.signUp.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.signUp.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
+        self.signUp.setObjectName("signUp")
         self.title = QtWidgets.QLabel(self.centralwidget)
         self.title.setGeometry(QtCore.QRect(330, 170, 411, 81))
         font = QtGui.QFont()
         font.setFamily("MV Boli")
         font.setPointSize(48)
+        font.setKerning(False)
         self.title.setFont(font)
-        self.title.setStyleSheet("\n"
-"color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgb(212, 32, 116), stop:0.994318 rgb(255, 173, 173));")
+        self.title.setStyleSheet(
+            "color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgb(212, 32, 116), stop:0.994318 rgb(255, 173, 173));")
+        self.title.setScaledContents(False)
         self.title.setAlignment(QtCore.Qt.AlignCenter)
         self.title.setObjectName("title")
         LoginWindow.setCentralWidget(self.centralwidget)
@@ -132,7 +158,7 @@ class Ui_LoginWindow(object):
 
         #################################################################################################################
 
-        self.myConfig(LoginWindow)
+        self.additional_config(LoginWindow)
 
         self.retranslateUi(LoginWindow)
         QtCore.QMetaObject.connectSlotsByName(LoginWindow)
@@ -143,4 +169,5 @@ class Ui_LoginWindow(object):
         self.label_username.setText(_translate("LoginWindow", "Nome de usuário:"))
         self.label_password.setText(_translate("LoginWindow", "Senha:"))
         self.pushButton.setText(_translate("LoginWindow", "👉🏻"))
+        self.signUp.setText(_translate("LoginWindow", "Create a account"))
         self.title.setText(_translate("LoginWindow", "Login"))
