@@ -3,10 +3,11 @@ import mysql.connector
 
 class User:
 
+	@staticmethod
 	def login(conn, name, password):
-		user = User.getUser(conn, name)
+		user = User.get_user(conn, name)
 
-		if user == []:
+		if not user:
 			return ['Usuário não encontrado']
 		else:
 			if user[0][3] == password:
@@ -14,7 +15,8 @@ class User:
 			else:
 				return ['Senha incorreta']
 
-	def getUser(conn, name):
+	@staticmethod
+	def get_user(conn, name):
 		cursor = conn.cursor()
 		sql = 'SELECT * FROM users WHERE username = "' + name +'"'
 		cursor.execute(sql)
@@ -23,7 +25,8 @@ class User:
 
 		return user
 
-	def updatePhoto(conn, photoData, user):
+	@staticmethod
+	def update_photo(conn, photoData, user):
 		cursor = conn.cursor()
 		sql = 'UPDATE users SET photo = %s WHERE username = %s;'
 		args = (photoData, user)
@@ -32,6 +35,7 @@ class User:
 
 		return 'OK'
 
+	@staticmethod
 	def insert(conn, user_data):
 		cursor = conn.cursor()
 		sql = 'INSERT INTO users VALUES(%s, %s, %s, %s)'
@@ -45,6 +49,7 @@ class User:
 
 		return 'OK'
 
+	@staticmethod
 	def update(conn, data, username):
 		cursor = conn.cursor()
 		sql = 'UPDATE users SET displayName = %s, _password = %s WHERE username = %s;'
@@ -54,6 +59,6 @@ class User:
 		conn.commit()
 
 		if data['profilePhoto'] != '':
-			User.updatePhoto(conn, data['profilePhoto'], username)
+			User.update_photo(conn, data['profilePhoto'], username)
 
 		return 'OK'

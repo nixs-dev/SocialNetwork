@@ -63,6 +63,7 @@ class Ui_RegisterWindow(object):
         RegisterWindow.close()
 
     def additional_config(self, RegisterWindow):
+        RegisterWindow.setFixedSize(1024, 768)
         self.goLogin.mousePressEvent = partial(self.go_to_login_window, RegisterWindow)
         self.pushButton.clicked.connect(partial(self.register_user))
         self.profilePhoto.mousePressEvent = self.change_profile_photo
@@ -84,7 +85,7 @@ class Ui_RegisterWindow(object):
         self.background = QtWidgets.QLabel(self.centralwidget)
         self.background.setGeometry(QtCore.QRect(0, 0, 1024, 768))
         self.background.setText("")
-        self.background.setPixmap(QtGui.QPixmap("assets/login.jpg"))
+        self.background.setPixmap(QtGui.QPixmap("assets/authBackground.jpg"))
         self.background.setScaledContents(True)
         self.background.setObjectName("background")
         self.container = QtWidgets.QFrame(self.centralwidget)
@@ -163,11 +164,13 @@ class Ui_RegisterWindow(object):
         self.title = QtWidgets.QLabel(self.centralwidget)
         self.title.setGeometry(QtCore.QRect(330, 170, 411, 81))
         font = QtGui.QFont()
-        font.setFamily("MV Boli")
+        font.setFamily("Segoe UI")
         font.setPointSize(48)
+        font.setBold(True)
+        font.setWeight(75)
+        font.setKerning(False)
         self.title.setFont(font)
-        self.title.setStyleSheet("\n"
-                                 "color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgb(212, 32, 116), stop:0.994318 rgb(255, 173, 173));")
+        self.title.setStyleSheet("color: rgb(6, 52, 113);")
         self.title.setAlignment(QtCore.Qt.AlignCenter)
         self.title.setObjectName("title")
         self.goLogin = QtWidgets.QLabel(self.centralwidget)

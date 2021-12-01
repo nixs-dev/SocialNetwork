@@ -36,7 +36,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="../resources.qrc">:/assets/login.jpg</pixmap>
+     <pixmap resource="../resources.qrc">:/assets/authBackground.jpg</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -294,13 +294,15 @@
     </property>
     <property name="font">
      <font>
-      <family>MV Boli</family>
+      <family>Segoe UI</family>
       <pointsize>48</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+      <kerning>false</kerning>
      </font>
     </property>
     <property name="styleSheet">
-     <string notr="true">
-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgb(212, 32, 116), stop:0.994318 rgb(255, 173, 173));</string>
+     <string notr="true">color: rgb(6, 52, 113);</string>
     </property>
     <property name="text">
      <string>Register</string>

@@ -9,6 +9,7 @@
 
 
 import views.Profile as Profile
+import views.CommentsFrame as Comments
 from PyQt5 import QtCore, QtGui, QtWidgets
 from database.Post import Post as post
 from tools.Session import Session
@@ -31,7 +32,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.LoginWindow.show()
         self.thisWindow.close()
 
-    def reloadPosts(self, layout):
+    def reload_posts(self, layout):
         while layout.count():
             child = layout.takeAt(0)
             if child.widget() is not None:
@@ -39,7 +40,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             elif child.layout() is not None:
                 self.clearTasks(child.layout(), None)
 
-    def openProfile(self, event):
+    def open_profile(self, event):
         self.thisWindow.close()
         
         self.ProfileWindow = QtWidgets.QMainWindow()
@@ -47,14 +48,17 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         ui.setupUi(self.ProfileWindow, self.dbConn, self.user)
         self.ProfileWindow.show()
 
-
-    def likePost(self, likeButton, thePost, theUser, event):
+    def like_post(self, likeButton, thePost, theUser, event):
         currentAmount = likeButton.text().split(" ")[1]
-        post.setLike(self.dbConn, thePost, theUser);
+        post.send_like(self.dbConn, thePost, theUser);
         likeButton.setText("❤" + " " + str(int(currentAmount) + 1))
 
-    def showPosts(self):
-        posts = post.getAll(self.dbConn)
+    def comment_post(self, commentButton, thePost, theUser, event):
+        self.comment_frame = Comments.CommentsFrame(self.centralwidget, self.dbConn, theUser, thePost)
+        self.comment_frame.show()
+
+    def show_posts(self):
+        posts = post.get_all(self.dbConn)
 
         for p in posts:
             self.post = QtWidgets.QFrame()
@@ -74,10 +78,15 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.userName.setGeometry(QtCore.QRect(70, 10, 47, 13))
             self.userName.setObjectName("userName")
             self.like = QtWidgets.QPushButton(self.post)
-            self.like.setGeometry(QtCore.QRect(460, 170, 31, 23))
+            self.like.setGeometry(QtCore.QRect(420, 170, 31, 23))
             self.like.setStyleSheet("color: rgb(255, 0, 0);\n"
         "background-color: rgb(255, 255, 255);")
             self.like.setObjectName("like")
+            self.comment = QtWidgets.QPushButton(self.post)
+            self.comment.setGeometry(QtCore.QRect(460, 170, 31, 23))
+            self.comment.setStyleSheet("color: rgb(255, 0, 0);\n"
+                                    "background-color: rgb(255, 255, 255);")
+            self.comment.setObjectName("like")
             self.postTitle_ = QtWidgets.QLabel(self.post)
             self.postTitle_.setGeometry(QtCore.QRect(10, 55, 481, 21))
             self.postTitle_.setText(p[2]);
@@ -97,7 +106,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.postContent.setWordWrap(False)
             self.postContent.setObjectName("postContent")
 
-            if p[1][2] != None:
+            if p[1][2] != b'NULL':
                 photoForAuthorPost = QtGui.QPixmap() 
                 photoForAuthorPost.loadFromData(p[1][2])
 
@@ -105,7 +114,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                 
             self.userName.setText(p[1][1])
             self.like.setText("❤" + " " + str(p[4]))
-            self.like.clicked.connect(partial(self.likePost, self.like, p[0], self.user[0]))
+            self.like.clicked.connect(partial(self.like_post, self.like, p[0], self.user[0]))
+            self.comment.setText("💬" + " " + str(p[5]))
+            self.comment.clicked.connect(partial(self.comment_post, self.comment, p[0], self.user[0]))
             self.postContent.setText(p[3])
             self.postsLayout.addWidget(self.post)
 
@@ -119,14 +130,14 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         if result == 'OK':
             QtWidgets.QMessageBox.about(self, 'Postado', 'Seu post foi enviado!')
 
-            self.reloadPosts(self.postsLayout)
-            self.showPosts()
+            self.reload_posts(self.postsLayout)
+            self.show_posts()
 
     def additional_config(self, MainWindow):
         MainWindow.setFixedSize(1024, 768)
         self.logoutButton.clicked.connect(partial(self.logout))
         self.sendPost.clicked.connect(partial(self.sendYourPost))
-        self.toProfile.mousePressEvent = partial(self.openProfile)
+        self.toProfile.mousePressEvent = partial(self.open_profile)
 
     def setupUi(self, MainWindow, dbConn, user):
 
@@ -253,8 +264,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         #################################################################################################################
 
         self.additional_config(MainWindow)
-        self.showPosts()
-
+        self.show_posts()
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
