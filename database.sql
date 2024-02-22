@@ -1,6 +1,7 @@
 create database socialNetwork;
 use socialNetwork;
 
+
 create table users (
 	username varchar(30),
     displayName varchar(30),
