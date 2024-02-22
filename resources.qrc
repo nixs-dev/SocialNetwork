@@ -1,0 +1,7 @@
+<RCC>
+  <qresource>
+    <file>assets/mainBackground.jpg</file>
+    <file>assets/defaultIcon.png</file>
+    <file>assets/authBackground.jpg</file>
+  </qresource>
+</RCC>
